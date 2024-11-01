@@ -1,0 +1,49 @@
+from tkinter import *
+from tkinter import simpledialog as sd
+from tkinter import messagebox as mb
+import time
+import datetime
+
+ 
+def set_reminder():
+    time_reminder=sd.askstring(title="Укажите время напоминания", prompt="Введите время (чч:мм)")
+    if time_reminder:
+        try:
+            hour, minets = time_reminder.split(":")
+            hour= int(hour)
+            minets=int(minets)
+            now_time = datetime.datetime.now()
+            r_time = now_time.replace(hour=hour,minute=minets)
+            mb.showinfo(title="Успешно", message=f"Упоминание установленно на {hour}:{minets}")
+            check_time
+        except ValueError:
+            mb.showerror(title="Ошибка", message=f"Неправильно указанно время")
+
+
+def check_time():
+    global r_time
+    if r_time:
+        now = time.time()
+        if now >= r_time.timestamp():
+            print("играет музыка")
+            r_time = None
+        window.after(5000,check_time)
+
+
+
+
+r_time = None
+
+window = Tk()
+window.title("Напоминалка")
+window.geometry(f"400x200+{window.winfo_screenmmwidth()//2-200}+{window.winfo_screenmmwidth()//2-100}")
+
+l = Label(window, text="Нажмите на кнопку и установите напоминание на любое время")
+l.pack(pady=10)
+
+btn= Button(window,text="Установить напоминание", command=set_reminder)
+btn.pack(pady=10)
+
+
+
+window.mainloop()
